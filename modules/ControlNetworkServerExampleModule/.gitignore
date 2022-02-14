@@ -1,10 +1,11 @@
 # .NET Core
+nuget.config
+nlog.config
 project.lock.json
 project.fragment.lock.json
 artifacts/
 **/Properties/launchSettings.json
-nuget.config
-nlog.config
+**/nuget.config
 
 *_i.c
 *_p.c

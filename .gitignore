@@ -3,4 +3,4 @@ config/
 nuget.config
 nlog.config
 **/nuget.config
-**/nlog.config
+**/nlog.confi
