@@ -1,3 +1,6 @@
 config/
 .env
 nuget.config
+nlog.config
+**/nuget.config
+**/nlog.config
