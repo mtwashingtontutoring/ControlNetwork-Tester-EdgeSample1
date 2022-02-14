@@ -22,14 +22,14 @@
       "sourceFileMap": {
         "/app": "${workspaceFolder}/modules/ControlNetworkServerExampleModule"
       },
-      "justMyCode": true,
+      "justMyCode": false,
       "requireExactSource": false
     },
     {
       "name": "ControlNetworkServerExampleModule Local Debug (.NET Core)",
       "type": "coreclr",
       "request": "launch",
-      "program": "${workspaceRoot}/modules/ControlNetworkServerExampleModule/bin/Debug/netcoreapp3.1/ControlNetworkServerExampleModule.dll",
+      "program": "${workspaceRoot}/modules/ControlNetworkServerExampleModule/bin/Debug/net6.0/ControlNetworkServerExampleModule.dll",
       "args": [],
       "cwd": "${workspaceRoot}/modules/ControlNetworkServerExampleModule",
       "internalConsoleOptions": "openOnSessionStart",
@@ -67,7 +67,7 @@
       "name": "RollPitchYawSensorModule Local Debug (.NET Core)",
       "type": "coreclr",
       "request": "launch",
-      "program": "${workspaceRoot}/modules/RollPitchYawSensorModule/bin/Debug/netcoreapp3.1/RollPitchYawSensorModule.dll",
+      "program": "${workspaceRoot}/modules/RollPitchYawSensorModule/bin/Debug/net6.0/RollPitchYawSensorModule.dll",
       "args": [],
       "cwd": "${workspaceRoot}/modules/RollPitchYawSensorModule",
       "internalConsoleOptions": "openOnSessionStart",

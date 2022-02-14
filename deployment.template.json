@@ -13,7 +13,12 @@
               "numericengineeringregistry1": {
                 "username": "$CONTAINER_REGISTRY_USERNAME_numericengineeringregistry1",
                 "password": "$CONTAINER_REGISTRY_PASSWORD_numericengineeringregistry1",
-                "address": "numericengineeringregistry1.azurecr.io"
+                "address": "$CONTAINER_REGISTRY_ADDRESS_numericengineeringregistry1"
+              },
+              "docker_mtwtn": {
+                "username": "$CONTAINER_REGISTRY_USERNAME_docker_mtwtn",
+                "password": "$CONTAINER_REGISTRY_PASSWORD_docker_mtwtn",
+                "address": "$CONTAINER_REGISTRY_ADDRESS_docker_mtwtn"
               }
             }
           }
@@ -64,16 +69,26 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.ControlNetworkServerExampleModule}",
-              "createOptions": {}
+              "createOptions": {
+                "HostConfig": {
+                  "PortBindings": {
+                    "18080/tcp": [
+                      {
+                        "HostPort": "18080"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
-          "SimulatedTemperatureSensor": {
+          "RollPitchYawSensorModule": {
             "version": "1.0",
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "mcr.microsoft.com/azureiotedge-simulated-temperature-sensor:1.0",
+              "image": "${MODULES.RollPitchYawSensorModule}",
               "createOptions": {}
             }
           }
@@ -82,13 +97,36 @@
     },
     "$edgeHub": {
       "properties.desired": {
-        "schemaVersion": "1.1",
+        "schemaVersion": "1.2",
         "routes": {
           "ControlNetworkServerExampleModuleToIoTHub": "FROM /messages/modules/ControlNetworkServerExampleModule/outputs/* INTO $upstream",
-          "sensorToControlNetworkServerExampleModule": "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/ControlNetworkServerExampleModule/inputs/input1\")"
+          "sensorToControlNetworkServerExampleModule": 
+            "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/ControlNetworkServerExampleModule/inputs/input1\")",
+          "RollPitchYawSensorModuleToIoTHub":
+            "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/ControlNetworkServerExampleModule/inputs/input2\")"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "ControlNetworkServerExampleModule": {
+      "properties.desired": {
+        "ControlNetwork": {
+          "config": {
+            "Listeners": {
+              "test-server": {
+                "Name": "test-server",
+                "HostName": "0.0.0.0",
+                "Port": 18080
+              },
+              "test-server-IPV6": {
+                "Name": "test-server",
+                "HostName": "::",
+                "Port": 18080
+              }
+            }
+          }
         }
       }
     }

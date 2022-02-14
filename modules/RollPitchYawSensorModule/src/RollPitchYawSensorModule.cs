@@ -1,6 +1,7 @@
-namespace ControlNetworkServerExampleModule
+namespace RollPitchYawSensorModule
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Runtime.InteropServices;
     using System.Runtime.Loader;
@@ -11,13 +12,21 @@ namespace ControlNetworkServerExampleModule
     using Microsoft.Azure.Devices.Client;
     using Microsoft.Azure.Devices.Client.Transport.Mqtt;
 
-    class ControlNetworkServerExampleModule
+    class Program
     {
         static int counter;
 
         static void Main(string[] args)
         {
-            Thread.Sleep(30*1000);
+            #if DEBUG
+            Console.WriteLine("Waiting for debugger to attach");
+            while (!Debugger.IsAttached)
+            {
+                Thread.Sleep(100);
+            }
+            
+            Console.WriteLine("Debugger attached");
+            #endif
             Init().Wait();
 
             // Wait until the app unloads or is cancelled
@@ -43,18 +52,16 @@ namespace ControlNetworkServerExampleModule
         /// </summary>
         static async Task Init()
         {
-            Console.WriteLine("ControlNetworkServerExampleModule initializing.");
             MqttTransportSettings mqttSetting = new MqttTransportSettings(TransportType.Mqtt_Tcp_Only);
             ITransportSettings[] settings = { mqttSetting };
 
             // Open a connection to the Edge runtime
             ModuleClient ioTHubModuleClient = await ModuleClient.CreateFromEnvironmentAsync(settings);
             await ioTHubModuleClient.OpenAsync();
-            Console.WriteLine("ControlNetworkServerExampleModule initialized.");
+            Console.WriteLine("IoT Hub module client initialized.");
 
             // Register callback to be called when a message is received by the module
-            await ioTHubModuleClient.SetInputMessageHandlerAsync("input1", handleSensorMessage, ioTHubModuleClient);
-            await ioTHubModuleClient.SetInputMessageHandlerAsync("input2", handleSensorMessage, ioTHubModuleClient);
+            await ioTHubModuleClient.SetInputMessageHandlerAsync("input1", PipeMessage, ioTHubModuleClient);
         }
 
         /// <summary>
@@ -62,7 +69,7 @@ namespace ControlNetworkServerExampleModule
         /// It just pipe the messages without any change.
         /// It prints all the incoming messages.
         /// </summary>
-        static async Task<MessageResponse> handleSensorMessage(Message message, object userContext)
+        static async Task<MessageResponse> PipeMessage(Message message, object userContext)
         {
             int counterValue = Interlocked.Increment(ref counter);
 

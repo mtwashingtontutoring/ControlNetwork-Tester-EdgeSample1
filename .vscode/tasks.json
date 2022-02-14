@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "Build ControlNetworkServerExampleModule",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -12,6 +12,25 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build RollPitchYawSensorModule",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/modules/RollPitchYawSensorModule/RollPitchYawSensorModule.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build",
+            "dependsOn": [
+                "Build ControlNetworkServerExampleModule", 
+                "Build RollPitchYawSensorModule"
+            ]
         },
         {
             "label": "publish",
